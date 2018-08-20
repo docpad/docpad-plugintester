@@ -36,6 +36,7 @@ DocPad's PluginTester class
 
 <a href="https://npmjs.com" title="npm is a package manager for javascript"><h3>NPM</h3></a><ul>
 <li>Install: <code>npm install --save docpad-plugintester</code></li>
+<li>Executable: <code>docpad-plugintester</code></li>
 <li>Module: <code>require('docpad-plugintester')</code></li></ul>
 
 <h3><a href="https://github.com/bevry/editions" title="Editions are the best way to produce and consume packages you care about.">Editions</a></h3>
@@ -52,6 +53,40 @@ DocPad's PluginTester class
 ## Usage
 
 [Complete API Documentation.](http://master.docpad-plugintester.docpad.surge.sh/docs/)
+
+To upgrade from code that looks like this:
+
+``` javascript
+require('docpad').require('testers').test({
+    pluginPath: __dirname + '/..',
+    testerClass: 'RendererTester'
+})
+```
+
+You would run:
+
+``` bash
+npm install --save-dev docpad-plugintester
+```
+
+And then replace that code with:
+
+``` javascript
+require('docpad-plugintester').test({
+    DocPad: require('docpad'),
+    pluginPath: require('path').join(__dirname, '..')
+})
+```
+
+In fact, if that file doesn't have anything custom inside it (`testerClass` is now also unnecessary), then you can delete that file altogether and change your `package.json:scripts.test` to `docpad-plugintest` like so:
+
+``` json
+{
+    "scripts": {
+        "test": "docpad-plugintester"
+    }
+}
+```
 
 
 <!-- HISTORY/ -->
