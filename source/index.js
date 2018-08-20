@@ -355,10 +355,18 @@ class PluginTester {
 		// Notify about testerPath deprecation
 		if (testerConfig.testerPath) {
 			throw new Error(
-				'The testerPath proprety has been removed in favour of the TesterClass property.\n' +
+				'The testerPath property has been removed in favour of the TesterClass property.\n' +
 				'The resolution may be as easy as replacing it with:\n' +
-				`TesterClass: require('./${testerConfig.testerPath}')`
+				`TesterClass: require('./${testerConfig.testerPath}')\n` +
+				'For more details refer to: https://github.com/docpad/docpad-plugintester'
 			)
+		}
+		if (testerConfig.testerClass) {
+			console.log(
+				'The testerClass property is no longer required, and will not be used.\n' +
+				'For more details refer to: https://github.com/docpad/docpad-plugintester'
+			)
+			delete testerConfig.testerClass
 		}
 
 		// Ensure and resolve pluginPath
@@ -379,7 +387,7 @@ class PluginTester {
 		}
 
 		// Ensure testerClass
-		const TesterClass = testerConfig.TesterClass || testerConfig.testerClass || PluginTester
+		const TesterClass = testerConfig.TesterClass || PluginTester
 
 		// Create our tester and run its tests
 		new TesterClass(testerConfig, docpadConfig).test()

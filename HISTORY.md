@@ -1,5 +1,8 @@
 # History
 
+## v1.1.1 2018 August 20
+- Add notice of removal of the `testerClass` property (lowecase `t`) and do not treat it as the new `TesterClass` property (uppercase `T`)
+
 ## v1.1.0 2018 August 20
 - Eliminated `testerPath` for `TesterClass`
 - Eliminated the need for the `pluginname.test.js` file if only defaults were used
