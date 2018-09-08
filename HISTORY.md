@@ -1,5 +1,9 @@
 # History
 
+## v1.2.0 2018 September 8
+- Removed DocPad v6.82 deprecations
+- `testCreate` no longer runs the `init` action, now it only does `clean` and `install`
+
 ## v1.1.1 2018 August 20
 - Add notice of removal of the `testerClass` property (lowecase `t`) and do not treat it as the new `TesterClass` property (uppercase `T`)
 

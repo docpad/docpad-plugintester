@@ -2,7 +2,6 @@
 
 // Standard
 const pathUtil = require('path')
-const assert = require('assert')
 
 // External
 const extendr = require('extendr')
@@ -19,9 +18,10 @@ let pluginPort = 2000 + parseInt(String(Date.now()).substr(-6, 4), 10)
  * @typedef {Object} TesterConfig
  * @description This is configuration used by our tester instance
  * @property {DocPad} DocPad the DocPad class
- * @property {string} pluginPath the path to the plugin
+ * @property {string} pluginPath the path to the plugin directory
  * @property {string} [testerName] the name of the test suite
  * @property {string} [pluginName] the name of the plugin, without `docpad-plugin-`, e.g. partials
+ * @property {BasePlugin} [PluginClass] the preloaded class of the plugin to use, otherwise is loaded automatically
  * @property {string} [testPath] directory path of the test site
  * @property {string} [outExpectedPath] (for the render test) this is directory path of the expected output
  * @property {boolean} [removeWhitespace=false] whether or not to trim whitespace from output comparisons
@@ -46,9 +46,7 @@ let pluginPort = 2000 + parseInt(String(Date.now()).substr(-6, 4), 10)
  * @property {string} [outPath]
  * @property {string} [srcPath]
  * @property {Array<string>} [pluginPaths]
- * @property {boolean} [enableUnlistedPlugins=true]
  * @property {Object<string, boolean>} [enabledPlugins]
- * @property {boolean} [skipUnsupportedPlugins=false]
  * @property {boolean} [catchExceptions=false]
  * @property {string} [environment]
  */
@@ -78,6 +76,7 @@ class PluginTester {
 			testerName: null,
 			pluginName: null,
 			pluginPath: null,
+			PluginClass: null,
 			testPath: null,
 			outExpectedPath: null,
 			removeWhitespace: false,
@@ -115,9 +114,6 @@ class PluginTester {
 			outPath: null,
 			srcPath: null,
 			pluginPaths: null,
-			enableUnlistedPlugins: true,
-			enabledPlugins: null,
-			skipUnsupportedPlugins: false,
 			catchExceptions: false,
 			environment: null
 		}, docpadConfig)
@@ -131,14 +127,6 @@ class PluginTester {
 		}
 		if (!this.docpadConfig.srcPath) {
 			this.docpadConfig.srcPath = pathUtil.join(this.docpadConfig.rootPath, 'src')
-		}
-		if (!this.docpadConfig.pluginPaths) {
-			this.docpadConfig.pluginPaths = [this.config.pluginPath]
-		}
-		if (!this.docpadConfig.enabledPlugins) {
-			const defaultEnabledPlugins = {}
-			defaultEnabledPlugins[this.config.pluginName] = true
-			this.docpadConfig.enabledPlugins = defaultEnabledPlugins
 		}
 	}
 
@@ -177,20 +165,12 @@ class PluginTester {
 				if (err) return done(err)
 				tester.docpad = docpad
 
-				// init docpad in case the plugin is starting from scratch
-				tester.docpad.action('init', function (err) {
-					if (err && err.message !== tester.docpad.getLocale().skeletonExists) {
-						// care about the error providing it isn't the skeleton exists error
-						return done(err)
-					}
+				// clean up the docpad out directory
+				tester.docpad.action('clean', function (err) {
+					if (err) return done(err)
 
-					// clean up the docpad out directory
-					tester.docpad.action('clean', function (err) {
-						if (err) return done(err)
-
-						// install anything on the website that needs to be installed
-						tester.docpad.action('install', done)
-					})
+					// install anything on the website that needs to be installed
+					tester.docpad.action('install', done)
 				})
 			})
 		})
@@ -207,15 +187,14 @@ class PluginTester {
 	testLoad () {
 		// Prepare
 		const tester = this
-		const { pluginName } = this.config
+		const { pluginPath, pluginName, PluginClass } = this.config
 
 		// Test
 		this.test(`load plugin ${pluginName}`, function (done) {
-			tester.docpad.loadedPlugin(pluginName, function (err, loaded) {
-				if (err) return done(err)
-				assert.ok(loaded)
-				done()
-			})
+			const opts = {
+				pluginPath, pluginName, PluginClass
+			}
+			tester.docpad.loadPlugin(opts, done)
 		})
 
 		// Chain
