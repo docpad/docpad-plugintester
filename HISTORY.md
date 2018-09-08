@@ -1,5 +1,8 @@
 # History
 
+## v1.2.1 2018 September 8
+- Updated [base files](https://github.com/bevry/base) and [editions](https://github.com/bevry/editions) using [boundation](https://github.com/bevry/boundation)
+
 ## v1.2.0 2018 September 8
 - Removed DocPad v6.82 deprecations
 - `testCreate` no longer runs the `init` action, now it only does `clean` and `install`
