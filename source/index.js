@@ -300,6 +300,13 @@ class PluginTester {
 	test () {
 		const tester = this
 		const { testerName } = this.config
+
+		// Ensure that there is a joe reporter available
+		if (!process.env.JOE_REPORTER && process.argv.join('').indexOf('--joe-reporter') === -1) {
+			process.env.JOE_REPORTER = 'console'
+		}
+
+		// Create the test suite for the plugin
 		joe.suite(testerName, function (suite, test) {
 			tester.suite = suite
 			tester.test = test
