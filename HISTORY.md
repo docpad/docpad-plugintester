@@ -1,6 +1,9 @@
 # History
 
-## v1.3.0 2018 September 21
+## v1.3.1 2018 September 28
+- More reliable test detection
+
+## v1.3.0 2018 September 28
 - Properly enable support for custom plugin testers
     - `PluginTester.test` now works for inherited classes
     - `PluginTester::test` now defaults the joe-reporter, rather than having it done in the `docpad-plugintester` executable

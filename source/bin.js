@@ -1,37 +1,32 @@
 /* eslint no-sync:0 */
 'use strict'
 
+const fsUtil = require('fs')
 const pathUtil = require('path')
 const cwd = process.cwd()
+
+function exists (path) {
+	return path && fsUtil.existsSync(path)
+}
 
 // Prepare
 function load (edition = null) {
 	// Test
 	const testPath = edition && pathUtil.join(cwd, edition, 'test')
-	if (testPath) {
-		try {
-			console.log('Loading custom DocPad Plugin tests via', testPath)
-			return require(testPath)
-		}
-		catch (err) { }
+	if (exists(testPath)) {
+		console.log('Loading custom DocPad Plugin tests via', testPath)
+		return require(testPath)
 	}
 
 	// Plugin
 	const pluginClassPath = (edition && pathUtil.join(cwd, edition, 'index')) || cwd
-	let PluginClass = null
-	try {
-		PluginClass = require(pluginClassPath)
-	}
-	catch (err) { }
+	const PluginClass = exists(pluginClassPath) ? require(pluginClassPath) : null
 
 	// Tester
 	const testerPath = edition && pathUtil.join(cwd, edition, 'tester')
-	if (testerPath) {
-		try {
-			console.log('Loading custom DocPad Plugin tests via', testerPath)
-			return require(testerPath).test({ PluginClass })
-		}
-		catch (err) { }
+	if (exists(testerPath)) {
+		console.log('Loading custom DocPad Plugin tests via', testerPath)
+		return require(testerPath).test({ PluginClass })
 	}
 
 	// Standard
