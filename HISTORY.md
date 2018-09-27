@@ -1,5 +1,11 @@
 # History
 
+## v1.3.0 2018 September 21
+- Properly enable support for custom plugin testers
+    - `PluginTester.test` now works for inherited classes
+    - `PluginTester::test` now defaults the joe-reporter, rather than having it done in the `docpad-plugintester` executable
+- Support testing specific editions via `docpad-plugintester edition=name`
+
 ## v1.2.1 2018 September 8
 - Updated [base files](https://github.com/bevry/base) and [editions](https://github.com/bevry/editions) using [boundation](https://github.com/bevry/boundation)
 
