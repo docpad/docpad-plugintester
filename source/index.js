@@ -366,7 +366,7 @@ class PluginTester {
 		}
 
 		// Ensure testerClass
-		const TesterClass = testerConfig.TesterClass || PluginTester
+		const TesterClass = testerConfig.TesterClass || this
 
 		// Create our tester and run its tests
 		new TesterClass(testerConfig, docpadConfig).test()
