@@ -36,10 +36,11 @@ function load (edition = null) {
 
 // Fetch the edition
 let edition = null
-for (const value of process.argv) {
-	const v = value.replace(/^--edition=/, '')
-	if (v !== value) {
-		edition = v
+for (let index = 0; index < process.argv.length; index++) {
+	const value = process.argv[index]
+	const editionValue = value.replace(/^--edition=/, '')
+	if (editionValue !== value) {
+		edition = editionValue
 		break
 	}
 }

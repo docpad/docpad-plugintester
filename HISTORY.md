@@ -1,5 +1,8 @@
 # History
 
+## v1.3.2 2018 October 1
+- Fix `ReferenceError: Symbol is not defined` on legacy node versions
+
 ## v1.3.1 2018 September 28
 - More reliable test detection
 
