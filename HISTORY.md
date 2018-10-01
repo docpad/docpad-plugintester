@@ -1,5 +1,8 @@
 # History
 
+## v1.3.3 2018 October 1
+- The create test is now a suite of tests, so that its workings are illuminated
+
 ## v1.3.2 2018 October 1
 - Fix `ReferenceError: Symbol is not defined` on legacy node versions
 

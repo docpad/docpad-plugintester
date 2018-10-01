@@ -160,18 +160,23 @@ class PluginTester {
 		const docpadConfig = this.docpadConfig
 
 		// Create Instance
-		this.test('create', function (done) {
-			tester.docpad = new DocPad(docpadConfig, function (err, docpad) {
-				if (err) return done(err)
-				tester.docpad = docpad
-
-				// clean up the docpad out directory
-				tester.docpad.action('clean', function (err) {
+		this.suite('create', function (suite, test) {
+			test('docpad', function (done) {
+				tester.docpad = new DocPad(docpadConfig, function (err, docpad) {
 					if (err) return done(err)
-
-					// install anything on the website that needs to be installed
-					tester.docpad.action('install', done)
+					tester.docpad = docpad
+					done()
 				})
+			})
+
+			// clean up the docpad out directory
+			test('clean', function (done) {
+				tester.docpad.action('clean', done)
+			})
+
+			// install anything on the website that needs to be installed
+			test('install', function (done) {
+				tester.docpad.action('install', done)
 			})
 		})
 
