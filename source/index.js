@@ -13,6 +13,9 @@ const safefs = require('safefs')
 
 // Variables
 let pluginPort = 2000 + parseInt(String(Date.now()).substr(-6, 4), 10)
+const removeWhitespaceRegex = /\s+/g // remove all whitespace and lines
+const trimRegex = /^\s+|\s+$/g // removes start and end whitespace and lines
+const removeLineRegex = /\n+/g // removes lines
 
 /**
  * @typedef {Object} TesterConfig
@@ -24,7 +27,7 @@ let pluginPort = 2000 + parseInt(String(Date.now()).substr(-6, 4), 10)
  * @property {BasePlugin} [PluginClass] the preloaded class of the plugin to use, otherwise is loaded automatically
  * @property {string} [testPath] directory path of the test site
  * @property {string} [outExpectedPath] (for the render test) this is directory path of the expected output
- * @property {boolean} [removeWhitespace=false] whether or not to trim whitespace from output comparisons
+ * @property {false|'remove'|'trim'} [whitespace='trim'] if false, no whitespace alterations, if remove, removes all whitespace, if trim, removes whitespace from start and end of lines and removes empty lines
  * @property {RegExp} [contentRemoveRegex] a regex to apply to output comparisons
  * @property {string} [autoExit='safe'] how should the plugin tests shutdown
  */
@@ -80,7 +83,7 @@ class PluginTester {
 				PluginClass: null,
 				testPath: null,
 				outExpectedPath: null,
-				removeWhitespace: false,
+				whitespace: 'trim',
 				contentRemoveRegex: null,
 				autoExit: 'safe',
 			},
@@ -234,6 +237,7 @@ class PluginTester {
 		const {
 			outExpectedPath,
 			removeWhitespace,
+			whitespace,
 			contentRemoveRegex,
 		} = this.config
 		const { outPath } = this.docpadConfig
@@ -299,22 +303,41 @@ class PluginTester {
 									// Fetch file value
 									let actual = outResults[key]
 									let expected = outExpectedResults[key]
+									let message = 'content comparison'
 
-									// Remove empty lines
-									if (removeWhitespace === true) {
-										const replaceLinesRegex = /\s+/g
-										actual = actual.replace(replaceLinesRegex, '')
-										expected = expected.replace(replaceLinesRegex, '')
+									// Remove all whitespace
+									if (whitespace === 'remove' || removeWhitespace) {
+										message += ' with whitespace removed'
+										actual = actual.replace(removeWhitespaceRegex, '')
+										expected = expected.replace(removeWhitespaceRegex, '')
+									}
+
+									// Trim whitespace from the start and end of each line, and remove empty lines
+									else if (whitespace === 'trim') {
+										message += ' with whitespace trimmed'
+										actual = actual
+											.split('\n')
+											.map((i) => i.replace(trimRegex, ''))
+											.join('\n')
+											.replace(removeLineRegex, '\n')
+											.replace(trimRegex, '')
+										expected = expected
+											.split('\n')
+											.map((i) => i.replace(trimRegex, ''))
+											.join('\n')
+											.replace(removeLineRegex, '\n')
+											.replace(trimRegex, '')
 									}
 
 									// Content regex
 									if (contentRemoveRegex) {
+										message += ' with content regex applied'
 										actual = actual.replace(contentRemoveRegex, '')
 										expected = expected.replace(contentRemoveRegex, '')
 									}
 
 									// Compare
-									equal(actual, expected)
+									equal(actual, expected, message)
 								})
 							})
 							done() // complete suite results

@@ -1,5 +1,10 @@
 # History
 
+## v1.6.0 2020 August 5
+
+-   new `whitespace` param, which now defaults to `trim`, which will trim all whitespace from the start and end of each line, and will remove whitespace only lines
+-   the old `removeWhitespace` param is now ported to `whitespace="remove"`
+
 ## v1.5.0 2020 August 5
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
