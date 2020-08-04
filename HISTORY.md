@@ -1,5 +1,9 @@
 # History
 
+## v1.6.1 2020 August 5
+
+-   fixed `Error: Cannot find module 'assert-helpers'` (regression since v1.4.0)
+
 ## v1.6.0 2020 August 5
 
 -   new `whitespace` param, which now defaults to `trim`, which will trim all whitespace from the start and end of each line, and will remove whitespace only lines
