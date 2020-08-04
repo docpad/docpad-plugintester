@@ -4,10 +4,6 @@
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
 
-## v1.4.0 2020 August 5
-
--   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
-
 ## v1.3.3 2018 October 1
 
 -   The create test is now a suite of tests, so that its workings are illuminated
