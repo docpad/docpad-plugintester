@@ -5,7 +5,7 @@ const pathUtil = require('path')
 
 // External
 const extendr = require('extendr')
-const joe = require('joe')
+const kava = require('kava')
 const { equal, deepEqual } = require('assert-helpers')
 const balUtil = require('bal-util')
 const { difference } = require('underscore')
@@ -59,7 +59,7 @@ let pluginPort = 2000 + parseInt(String(Date.now()).substr(-6, 4), 10)
  * @param {DocPadConfig} [docpadConfig]
  */
 class PluginTester {
-	constructor (config = {}, docpadConfig = {}) {
+	constructor(config = {}, docpadConfig = {}) {
 		/**
 		 * The DocPad instance
 		 * @private
@@ -71,22 +71,27 @@ class PluginTester {
 		 * Default plugin config
 		 * @type {TesterConfig}
 		 */
-		this.config = extendr.deep({
-			DocPad: null,
-			testerName: null,
-			pluginName: null,
-			pluginPath: null,
-			PluginClass: null,
-			testPath: null,
-			outExpectedPath: null,
-			removeWhitespace: false,
-			contentRemoveRegex: null,
-			autoExit: 'safe'
-		}, config)
+		this.config = extendr.deep(
+			{
+				DocPad: null,
+				testerName: null,
+				pluginName: null,
+				pluginPath: null,
+				PluginClass: null,
+				testPath: null,
+				outExpectedPath: null,
+				removeWhitespace: false,
+				contentRemoveRegex: null,
+				autoExit: 'safe',
+			},
+			config
+		)
 
 		// Ensure plugin name
 		if (!this.config.pluginName) {
-			this.config.pluginName = pathUtil.basename(this.config.pluginPath).replace('docpad-plugin-', '')
+			this.config.pluginName = pathUtil
+				.basename(this.config.pluginPath)
+				.replace('docpad-plugin-', '')
 		}
 
 		// Ensure tester name
@@ -99,34 +104,46 @@ class PluginTester {
 			this.config.testPath = pathUtil.join(this.config.pluginPath, 'test')
 		}
 		if (!this.config.outExpectedPath) {
-			this.config.outExpectedPath = pathUtil.join(this.config.testPath, 'out-expected')
+			this.config.outExpectedPath = pathUtil.join(
+				this.config.testPath,
+				'out-expected'
+			)
 		}
 
 		/**
 		 * Default DocPad config
 		 * @type {DocPadConfig}
 		 */
-		this.docpadConfig = extendr.deep({
-			global: true,
-			port: ++pluginPort,
-			logLevel: process.argv.indexOf('-d') !== -1 ? 7 : 5,
-			rootPath: null,
-			outPath: null,
-			srcPath: null,
-			pluginPaths: null,
-			catchExceptions: false,
-			environment: null
-		}, docpadConfig)
+		this.docpadConfig = extendr.deep(
+			{
+				global: true,
+				port: ++pluginPort,
+				logLevel: process.argv.indexOf('-d') !== -1 ? 7 : 5,
+				rootPath: null,
+				outPath: null,
+				srcPath: null,
+				pluginPaths: null,
+				catchExceptions: false,
+				environment: null,
+			},
+			docpadConfig
+		)
 
 		// Extend DocPad Configuration
 		if (!this.docpadConfig.rootPath) {
 			this.docpadConfig.rootPath = this.config.testPath
 		}
 		if (!this.docpadConfig.outPath) {
-			this.docpadConfig.outPath = pathUtil.join(this.docpadConfig.rootPath, 'out')
+			this.docpadConfig.outPath = pathUtil.join(
+				this.docpadConfig.rootPath,
+				'out'
+			)
 		}
 		if (!this.docpadConfig.srcPath) {
-			this.docpadConfig.srcPath = pathUtil.join(this.docpadConfig.rootPath, 'src')
+			this.docpadConfig.srcPath = pathUtil.join(
+				this.docpadConfig.rootPath,
+				'src'
+			)
 		}
 	}
 
@@ -134,7 +151,7 @@ class PluginTester {
 	 * Get tester Configuration
 	 * @return {TesterConfig}
 	 */
-	getConfig () {
+	getConfig() {
 		return this.config
 	}
 
@@ -142,10 +159,8 @@ class PluginTester {
 	 * Get the plugin instance
 	 * @return {BasePlugin} the plugin instance
 	 */
-	getPlugin () {
-		return this.docpad.getPlugin(
-			this.getConfig().pluginName
-		)
+	getPlugin() {
+		return this.docpad.getPlugin(this.getConfig().pluginName)
 	}
 
 	/**
@@ -153,7 +168,7 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	testCreate () {
+	testCreate() {
 		// Prepare
 		const tester = this
 		const { DocPad } = this.config
@@ -189,7 +204,7 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	testLoad () {
+	testLoad() {
 		// Prepare
 		const tester = this
 		const { pluginPath, pluginName, PluginClass } = this.config
@@ -197,7 +212,9 @@ class PluginTester {
 		// Test
 		this.test(`load plugin ${pluginName}`, function (done) {
 			const opts = {
-				pluginPath, pluginName, PluginClass
+				pluginPath,
+				pluginName,
+				PluginClass,
 			}
 			tester.docpad.loadPlugin(opts, done)
 		})
@@ -211,10 +228,14 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	testGenerate () {
+	testGenerate() {
 		// Prepare
 		const tester = this
-		const { outExpectedPath, removeWhitespace, contentRemoveRegex } = this.config
+		const {
+			outExpectedPath,
+			removeWhitespace,
+			contentRemoveRegex,
+		} = this.config
 		const { outPath } = this.docpadConfig
 
 		// Test
@@ -229,7 +250,9 @@ class PluginTester {
 			suite('results', function (suite, test, done) {
 				safefs.exists(outExpectedPath, function (exists) {
 					if (!exists) {
-						console.log(`skipping results comparison, as outExpectedPath:[${outExpectedPath}] doesn't exist`)
+						console.log(
+							`skipping results comparison, as outExpectedPath:[${outExpectedPath}] doesn't exist`
+						)
 						return done()
 					}
 
@@ -238,7 +261,10 @@ class PluginTester {
 						if (err) return done(err)
 
 						// Get expected results
-						balUtil.scanlist(outExpectedPath, function (err, outExpectedResults) {
+						balUtil.scanlist(outExpectedPath, function (
+							err,
+							outExpectedResults
+						) {
 							if (err) return done(err)
 
 							// Prepare
@@ -247,10 +273,24 @@ class PluginTester {
 
 							// Check we have the same files
 							test('same files', function () {
-								const outDifferenceKeysA = difference(outExpectedResultsKeys, outResultsKeys)
-								deepEqual(outDifferenceKeysA, [], 'The following file(s) should have been generated')
-								const outDifferenceKeysB = difference(outResultsKeys, outExpectedResultsKeys)
-								deepEqual(outDifferenceKeysB, [], 'The following file(s) should not have been generated')
+								const outDifferenceKeysA = difference(
+									outExpectedResultsKeys,
+									outResultsKeys
+								)
+								deepEqual(
+									outDifferenceKeysA,
+									[],
+									'The following file(s) should have been generated'
+								)
+								const outDifferenceKeysB = difference(
+									outResultsKeys,
+									outExpectedResultsKeys
+								)
+								deepEqual(
+									outDifferenceKeysB,
+									[],
+									'The following file(s) should not have been generated'
+								)
 							})
 
 							// Check the contents of those files match
@@ -293,7 +333,7 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	testCustom () {
+	testCustom() {
 		return this
 	}
 
@@ -302,17 +342,12 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	test () {
+	test() {
 		const tester = this
 		const { testerName } = this.config
 
-		// Ensure that there is a joe reporter available
-		if (!process.env.JOE_REPORTER && process.argv.join('').indexOf('--joe-reporter') === -1) {
-			process.env.JOE_REPORTER = 'console'
-		}
-
 		// Create the test suite for the plugin
-		joe.suite(testerName, function (suite, test) {
+		kava.suite(testerName, function (suite, test) {
 			tester.suite = suite
 			tester.test = test
 			tester.testCreate().testLoad().testGenerate().testCustom().finish()
@@ -324,7 +359,7 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	finish () {
+	finish() {
 		const tester = this
 		const { autoExit } = this.config
 		if (autoExit) {
@@ -342,38 +377,41 @@ class PluginTester {
 	 * @param {DocPadConfig} [docpadConfig]
 	 * @returns {PluginTester} the created instance
 	 */
-	static test (testerConfig = {}, docpadConfig = {}) {
+	static test(testerConfig = {}, docpadConfig = {}) {
 		// Notify about testerPath deprecation
 		if (testerConfig.testerPath) {
 			throw new Error(
 				'The testerPath property has been removed in favour of the TesterClass property.\n' +
-				'The resolution may be as easy as replacing it with:\n' +
-				`TesterClass: require('./${testerConfig.testerPath}')\n` +
-				'For more details refer to: https://github.com/docpad/docpad-plugintester'
+					'The resolution may be as easy as replacing it with:\n' +
+					`TesterClass: require('./${testerConfig.testerPath}')\n` +
+					'For more details refer to: https://github.com/docpad/docpad-plugintester'
 			)
 		}
 		if (testerConfig.testerClass) {
 			console.log(
 				'The testerClass property is no longer required, and will not be used.\n' +
-				'For more details refer to: https://github.com/docpad/docpad-plugintester'
+					'For more details refer to: https://github.com/docpad/docpad-plugintester'
 			)
 			delete testerConfig.testerClass
 		}
 
 		// Ensure and resolve pluginPath
-		testerConfig.pluginPath = pathUtil.resolve(testerConfig.pluginPath || process.cwd())
+		testerConfig.pluginPath = pathUtil.resolve(
+			testerConfig.pluginPath || process.cwd()
+		)
 
 		// Ensure DocPad class
 		if (!testerConfig.DocPad) {
 			try {
 				// handle npm install cases
 				testerConfig.DocPad = require('docpad')
-			}
-			catch (err) {
+			} catch (err) {
 				// handle npm link cases
-				testerConfig.DocPad = require(
-					pathUtil.resolve(testerConfig.pluginPath, 'node_modules', 'docpad')
-				)
+				testerConfig.DocPad = require(pathUtil.resolve(
+					testerConfig.pluginPath,
+					'node_modules',
+					'docpad'
+				))
 			}
 		}
 

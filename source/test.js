@@ -1,8 +1,8 @@
 'use strict'
 
-const joe = require('joe')
+const kava = require('kava')
 
-joe.suite('plugintester', function (suite, test) {
+kava.suite('plugintester', function (suite, test) {
 	test('require', function () {
 		require('./')
 	})

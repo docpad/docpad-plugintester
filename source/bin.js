@@ -5,12 +5,12 @@ const fsUtil = require('fs')
 const pathUtil = require('path')
 const cwd = process.cwd()
 
-function exists (path) {
+function exists(path) {
 	return path && fsUtil.existsSync(path)
 }
 
 // Prepare
-function load (edition = null) {
+function load(edition = null) {
 	// Test
 	const testPath = edition && pathUtil.join(cwd, edition, 'test')
 	if (exists(testPath)) {
@@ -19,7 +19,8 @@ function load (edition = null) {
 	}
 
 	// Plugin
-	const pluginClassPath = (edition && pathUtil.join(cwd, edition, 'index')) || cwd
+	const pluginClassPath =
+		(edition && pathUtil.join(cwd, edition, 'index')) || cwd
 	const PluginClass = exists(pluginClassPath) ? require(pluginClassPath) : null
 
 	// Tester
