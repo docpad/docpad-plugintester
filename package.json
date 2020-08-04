@@ -109,7 +109,7 @@
   "type": "commonjs",
   "main": "index.cjs",
   "dependencies": {
-    "assert-helpers": "4.10.0",
+    "assert-helpers": "6.19.0",
     "bal-util": "^2.8.0",
     "editions": "^3.16.0",
     "extendr": "^5.13.0",
