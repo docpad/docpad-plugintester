@@ -113,7 +113,7 @@
     "bal-util": "^2.8.0",
     "editions": "^3.16.0",
     "extendr": "^5.13.0",
-    "kava": "3.2.0",
+    "kava": "5.10.0",
     "safefs": "4.2.0",
     "underscore": "^1.10.2"
   },
