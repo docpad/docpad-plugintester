@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use strict'
 
 // Standard
@@ -121,7 +122,10 @@ class PluginTester {
 			{
 				global: true,
 				port: ++pluginPort,
-				logLevel: process.argv.indexOf('-d') !== -1 ? 7 : 5,
+				logLevel:
+					process.argv.includes('-d') || process.argv.includes('--debug')
+						? 7
+						: 5,
 				rootPath: null,
 				outPath: null,
 				srcPath: null,
@@ -171,20 +175,33 @@ class PluginTester {
 	 * @returns {PluginTester} this
 	 * @chainable
 	 */
-	testCreate() {
+	testInit() {
 		// Prepare
 		const tester = this
-		const { DocPad } = this.config
+		const { DocPad, pluginPath, pluginName, PluginClass } = this.config
+
+		// Prepare plugin options
+		const pluginOpts = {
+			pluginPath,
+			pluginName,
+			PluginClass,
+		}
+
+		// Prepare docpad configuration
 		const docpadConfig = this.docpadConfig
+		docpadConfig.events = docpadConfig.events || {}
 
 		// Create Instance
-		this.suite('create', function (suite, test) {
-			test('docpad', function (done) {
-				tester.docpad = new DocPad(docpadConfig, function (err, docpad) {
-					if (err) return done(err)
-					tester.docpad = docpad
-					done()
-				})
+		this.suite('init', function (suite, test) {
+			// create docpad and load the plugin
+			test('create', function (done) {
+				// Prepare
+				docpadConfig.events.loadPlugins = function ({ plugins }) {
+					plugins.add(pluginOpts)
+				}
+
+				// Create
+				tester.docpad = new DocPad(docpadConfig, done)
 			})
 
 			// clean up the docpad out directory
@@ -196,30 +213,6 @@ class PluginTester {
 			test('install', function (done) {
 				tester.docpad.action('install', done)
 			})
-		})
-
-		// Chain
-		return this
-	}
-
-	/**
-	 * Test loading the plugin
-	 * @returns {PluginTester} this
-	 * @chainable
-	 */
-	testLoad() {
-		// Prepare
-		const tester = this
-		const { pluginPath, pluginName, PluginClass } = this.config
-
-		// Test
-		this.test(`load plugin ${pluginName}`, function (done) {
-			const opts = {
-				pluginPath,
-				pluginName,
-				PluginClass,
-			}
-			tester.docpad.loadPlugin(opts, done)
 		})
 
 		// Chain
@@ -373,7 +366,7 @@ class PluginTester {
 		kava.suite(testerName, function (suite, test) {
 			tester.suite = suite
 			tester.test = test
-			tester.testCreate().testLoad().testGenerate().testCustom().finish()
+			tester.testInit().testGenerate().testCustom().finish()
 		})
 	}
 

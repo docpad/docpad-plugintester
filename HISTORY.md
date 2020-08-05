@@ -1,5 +1,12 @@
 # History
 
+## v1.6.2 2020 August 5
+
+-   required docpad v6.83.1 to make use of the following bugfix
+    -   ensures test plugin is loaded prior to `docpadReady` event and whatnot
+-   support `--debug` along with `-d`
+-   `testCreate` and `testLoad` are now merged into a new `testInit`
+
 ## v1.6.1 2020 August 5
 
 -   fixed `Error: Cannot find module 'assert-helpers'` (regression since v1.4.0)
