@@ -1,5 +1,11 @@
 # History
 
+## v1.7.0 2020 August 13
+
+-   Correctly load and test editioned plugins
+-   Output what we actually load, so awareness and debugging is much easier
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v1.6.2 2020 August 5
 
 -   required docpad v6.83.1 to make use of the following bugfix

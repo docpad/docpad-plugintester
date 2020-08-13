@@ -247,7 +247,7 @@ class PluginTester {
 			suite('results', function (suite, test, done) {
 				safefs.exists(outExpectedPath, function (exists) {
 					if (!exists) {
-						console.log(
+						console.warn(
 							`skipping results comparison, as outExpectedPath:[${outExpectedPath}] doesn't exist`
 						)
 						return done()
@@ -404,7 +404,7 @@ class PluginTester {
 			)
 		}
 		if (testerConfig.testerClass) {
-			console.log(
+			console.warn(
 				'The testerClass property is no longer required, and will not be used.\n' +
 					'For more details refer to: https://github.com/docpad/docpad-plugintester'
 			)

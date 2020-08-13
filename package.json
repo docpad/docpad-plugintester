@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugintester",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "DocPad's PluginTester class",
   "homepage": "https://github.com/docpad/docpad-plugintester",
   "license": "MIT",
@@ -86,7 +86,9 @@
   "dependencies": {
     "assert-helpers": "^6.19.0",
     "bal-util": "^2.8.0",
+    "editions": "^4.0.0",
     "extendr": "^5.13.0",
+    "get-cli-arg": "^6.5.0",
     "kava": "^5.10.0",
     "safefs": "^6.11.0",
     "underscore": "^1.10.2"
@@ -101,7 +103,7 @@
     "prettier": "^2.0.5",
     "projectz": "^2.13.0",
     "surge": "^0.21.6",
-    "valid-directory": "^2.8.0"
+    "valid-directory": "^3.0.0"
   },
   "scripts": {
     "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
