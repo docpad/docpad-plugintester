@@ -5,7 +5,6 @@
 const pathUtil = require('path')
 
 // External
-const extendr = require('extendr')
 const kava = require('kava')
 const { equal, deepEqual } = require('assert-helpers')
 const balUtil = require('bal-util')
@@ -50,7 +49,6 @@ const removeLineRegex = /\n+/g // removes lines
  * @property {string} [outPath]
  * @property {string} [srcPath]
  * @property {Array<string>} [pluginPaths]
- * @property {Object<string, boolean>} [enabledPlugins]
  * @property {boolean} [catchExceptions=false]
  * @property {string} [environment]
  */
@@ -75,21 +73,19 @@ class PluginTester {
 		 * Default plugin config
 		 * @type {TesterConfig}
 		 */
-		this.config = extendr.deep(
-			{
-				DocPad: null,
-				testerName: null,
-				pluginName: null,
-				pluginPath: null,
-				PluginClass: null,
-				testPath: null,
-				outExpectedPath: null,
-				whitespace: 'trim',
-				contentRemoveRegex: null,
-				autoExit: 'safe',
-			},
-			config
-		)
+		this.config = {
+			DocPad: null,
+			testerName: null,
+			pluginName: null,
+			pluginPath: null,
+			PluginClass: null,
+			testPath: null,
+			outExpectedPath: null,
+			whitespace: 'trim',
+			contentRemoveRegex: null,
+			autoExit: 'safe',
+			...config,
+		}
 
 		// Ensure plugin name
 		if (!this.config.pluginName) {
@@ -118,23 +114,19 @@ class PluginTester {
 		 * Default DocPad config
 		 * @type {DocPadConfig}
 		 */
-		this.docpadConfig = extendr.deep(
-			{
-				global: true,
-				port: ++pluginPort,
-				logLevel:
-					process.argv.includes('-d') || process.argv.includes('--debug')
-						? 7
-						: 5,
-				rootPath: null,
-				outPath: null,
-				srcPath: null,
-				pluginPaths: null,
-				catchExceptions: false,
-				environment: null,
-			},
-			docpadConfig
-		)
+		this.docpadConfig = {
+			global: true,
+			port: ++pluginPort,
+			logLevel:
+				process.argv.includes('-d') || process.argv.includes('--debug') ? 7 : 5,
+			rootPath: null,
+			outPath: null,
+			srcPath: null,
+			pluginPaths: null,
+			catchExceptions: false,
+			environment: null,
+			...docpadConfig,
+		}
 
 		// Extend DocPad Configuration
 		if (!this.docpadConfig.rootPath) {
@@ -197,10 +189,12 @@ class PluginTester {
 			test('create', function (done) {
 				// Prepare
 				docpadConfig.events.loadPlugins = function ({ plugins }) {
+					console.log('Adding the plugin with the configuration:', pluginOpts)
 					plugins.add(pluginOpts)
 				}
 
 				// Create
+				console.log('Creating DocPad with the configuration:', docpadConfig)
 				tester.docpad = new DocPad(docpadConfig, done)
 			})
 
@@ -366,7 +360,11 @@ class PluginTester {
 		kava.suite(testerName, function (suite, test) {
 			tester.suite = suite
 			tester.test = test
-			tester.testInit().testGenerate().testCustom().finish()
+			// ignore chaining in case custom extension forgot to chain
+			tester.testInit()
+			tester.testGenerate()
+			tester.testCustom()
+			tester.finish()
 		})
 	}
 

@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugintester",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "DocPad's PluginTester class",
   "homepage": "https://github.com/docpad/docpad-plugintester",
   "license": "MIT",
@@ -87,7 +87,6 @@
     "assert-helpers": "^6.19.0",
     "bal-util": "^2.8.0",
     "editions": "^4.0.0",
-    "extendr": "^5.13.0",
     "get-cli-arg": "^6.5.0",
     "kava": "^5.10.0",
     "safefs": "^6.11.0",

@@ -1,5 +1,10 @@
 # History
 
+## v1.7.3 2020 August 13
+
+-   Output docpad and tester configuration for easier debugging
+-   Compatibility with situations where the custom tester forgot to chain
+
 ## v1.7.2 2020 August 13
 
 -   Better manual edition/directory loading (compounded by v1.7.0)
