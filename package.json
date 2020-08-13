@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugintester",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "DocPad's PluginTester class",
   "homepage": "https://github.com/docpad/docpad-plugintester",
   "license": "MIT",

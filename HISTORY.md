@@ -1,5 +1,9 @@
 # History
 
+## v1.7.1 2020 August 13
+
+-   Fix manual edition/directory loading (compounded by v1.7.0)
+
 ## v1.7.0 2020 August 13
 
 -   Correctly load and test editioned plugins

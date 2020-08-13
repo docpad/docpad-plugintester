@@ -12,10 +12,15 @@ function exists(path) {
 	return path && fsUtil.existsSync(path)
 }
 
-function resolve(...paths) {
+function resolve(paths = [], extensions = []) {
 	for (const p of paths) if (!p) return ''
 	const path = pathUtil.resolve(...paths)
-	return path && exists(path) ? path : ''
+	if (path && exists(path)) return path
+	for (const extension of extensions) {
+		const p = path + '.' + extension
+		if (exists(p)) return p
+	}
+	return ''
 }
 
 function json(path) {
@@ -23,7 +28,7 @@ function json(path) {
 }
 
 function loader() {
-	const pkgPath = resolve(cwd, 'package.json')
+	const pkgPath = resolve([cwd, 'package.json'])
 	if (!pkgPath)
 		throw new Error(
 			`${cwd} does not seem to be a valid plugin, it has no package.json file`
@@ -31,8 +36,8 @@ function loader() {
 
 	// use cli arg if provided
 	const pkg = json(pkgPath)
-	let directory = resolve(cwd, getarg('edition') || getarg('directory'))
-	let entry = pkg.main
+	let directory = resolve([cwd, getarg('edition') || getarg('directory')])
+	let entry = pkg.main.replace(pathUtil.extname(pkg.main), '')
 
 	// doesn't have editions, so use cwd as the directory
 	if (!pkg.editions) {
@@ -44,13 +49,13 @@ function loader() {
 			versions: process.versions,
 		})
 		directory = edition.directory
-		entry = edition.entry
+		entry = edition.entry.replace(pathUtil.extname(edition.entry), '')
 	}
 
 	// discover code files
-	const main = resolve(directory, entry)
-	const test = resolve(directory, 'test' + pathUtil.extname(entry))
-	const tester = resolve(directory, 'tester' + pathUtil.extname(entry))
+	const main = resolve([directory, entry], ['js', 'cjs', 'mjs'])
+	const test = resolve([directory, 'test'], ['js', 'cjs', 'mjs'])
+	const tester = resolve([directory, 'tester'], ['js', 'cjs', 'mjs'])
 
 	// custom test runner
 	if (test) {
@@ -59,6 +64,7 @@ function loader() {
 	}
 
 	// our test runner
+	if (!main) throw new Error(`Unable to resolve the main entry`)
 	console.log('Plugin:', main)
 	const PluginClass = require(main)
 
