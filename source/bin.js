@@ -34,10 +34,13 @@ function loader() {
 			`${cwd} does not seem to be a valid plugin, it has no package.json file`
 		)
 
-	// use cli arg if provided
+	// use cli args if provided
 	const pkg = json(pkgPath)
-	let directory = resolve([cwd, getarg('edition') || getarg('directory')])
-	let entry = pkg.main.replace(pathUtil.extname(pkg.main), '')
+	const dir = getarg('directory')
+	let directory = resolve([cwd, dir])
+	let entry = getarg('entry') || pkg.main
+	entry = entry.replace(pathUtil.extname(entry), '')
+	if (dir) entry = entry.replace(dir + pathUtil.sep, '')
 
 	// doesn't have editions, so use cwd as the directory
 	if (!pkg.editions) {
@@ -45,9 +48,12 @@ function loader() {
 	}
 	// has editions, but none were provided, so detect which one to use
 	else if (!directory) {
-		const edition = editions.determineEdition(pkg.editions, {
-			versions: process.versions,
-		})
+		const ed = getarg('edition')
+		const edition = ed
+			? /* manual */ pkg.editions.find((e) => (e.directory = ed))
+			: /* auto */ editions.determineEdition(pkg.editions, {
+					versions: process.versions,
+			  })
 		directory = edition.directory
 		entry = edition.entry.replace(pathUtil.extname(edition.entry), '')
 	}
@@ -64,7 +70,10 @@ function loader() {
 	}
 
 	// our test runner
-	if (!main) throw new Error(`Unable to resolve the main entry`)
+	if (!main) {
+		console.dir([directory, entry])
+		throw new Error(`Unable to resolve the main entry`)
+	}
 	console.log('Plugin:', main)
 	const PluginClass = require(main)
 

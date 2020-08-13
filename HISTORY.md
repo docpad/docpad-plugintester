@@ -1,5 +1,9 @@
 # History
 
+## v1.7.2 2020 August 13
+
+-   Better manual edition/directory loading (compounded by v1.7.0)
+
 ## v1.7.1 2020 August 13
 
 -   Fix manual edition/directory loading (compounded by v1.7.0)
