@@ -84,7 +84,7 @@
   "type": "commonjs",
   "main": "source/index.js",
   "dependencies": {
-    "assert-helpers": "^6.19.0",
+    "assert-helpers": "^7.2.0",
     "bal-util": "^2.8.0",
     "editions": "^4.0.0",
     "get-cli-arg": "^6.5.0",
